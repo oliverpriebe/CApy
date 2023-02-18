@@ -1,4 +1,3 @@
-from pyfaidx import Fasta as _Fasta
 import numpy as _np
 import sys as _sys
 import fastmmap
