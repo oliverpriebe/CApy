@@ -12,7 +12,7 @@ import pandas as _pd
 # wrap in a class because we only want to remember which reference we're using,
 # so we don't have to instantiate it every time genome_region is called
 class _FA:
-	def __init__(self, ref_fa_file = "/mnt/j/db/hg19/ref/hs37d5.fa"):
+	def __init__(self, ref_fa_file = None):
 		self._set_reference(ref_fa_file)
 
 	def __auto_reset_reference(f):
@@ -54,15 +54,16 @@ class _FA:
 		return self.chrlens
 
 	def _set_reference(self, ref):
-		try:
-			self.ref_fa_file = ref
-			self.ref_fa_obj = _Fasta(self.ref_fa_file, rebuild = False)
-			self.chrlens = _np.array([len(x) for x in self.ref_fa_obj.records.values()]);
-		except _FastaNotFoundError:
-			print("Could not load reference genome!")
+		if ref is not None:
+			try:
+				self.ref_fa_file = ref
+				self.ref_fa_obj = _Fasta(self.ref_fa_file, rebuild = False)
+				self.chrlens = _np.array([len(x) for x in self.ref_fa_obj.records.values()]);
+			except _FastaNotFoundError:
+				print("Could not load reference genome!")
 
 # export public functions
-_fa = _FA(ref_fa_file = _os.environ["CAPY_REF_FA"] if "CAPY_REF_FA" in _os.environ else "/mnt/j/db/hg19/ref/hs37d5.fa");
+_fa = _FA(ref_fa_file = _os.environ["CAPY_REF_FA"] if "CAPY_REF_FA" in _os.environ else None);
 genome_region = _fa._genome_region
 chrpos2gpos = _fa._chrpos2gpos
 gpos2chrpos = _fa._gpos2chrpos
@@ -140,7 +141,7 @@ class _gnomad:
 
 		self.__mmap()
 
-_gnmd = _gnomad()
-query_gnomad_1bit = _gnmd._query_1bit
-query_gnomad_1bit_raw = _gnmd._query_1bit_raw
-set_gnomad_ref_params = _gnmd._set_gnomad_ref_params
+#_gnmd = _gnomad()
+#query_gnomad_1bit = _gnmd._query_1bit
+#query_gnomad_1bit_raw = _gnmd._query_1bit_raw
+#set_gnomad_ref_params = _gnmd._set_gnomad_ref_params
